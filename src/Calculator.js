@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, SafeAreaView, View, ScrollView, Text} from 'react-native';
 import * as colors from './colors';
+import {evaluate} from 'mathjs';
 import {
   NumButton,
   OrangeButton,
@@ -24,18 +25,26 @@ class Calculator extends Component {
     });
   };
 
-  evaluate = () => {
-    this.setState({
-      // eslint-disable-next-line no-eval
-      answer: eval(this.state.output),
-      output: '',
-    });
-  };
-
   onClear = () => {
     this.setState({
       output: '',
+      parenthCount: 0,
     });
+  };
+
+  handleEqualPress = () => {
+    const expression = this.state.output.replace('√', 'sqrt');
+    console.log('output:' + this.state.output);
+    console.log('output:' + expression);
+    expression.match('[()]')
+      ? this.setState({
+          answer: 'Error empty ()',
+          output: '',
+        })
+      : this.setState({
+          answer: evaluate(expression),
+          output: '',
+        });
   };
 
   render() {
@@ -64,7 +73,10 @@ class Calculator extends Component {
               />
               <LightBlueButton
                 label="√"
-                onPress={() => this.handlePress('√(')}
+                onPress={() => {
+                  this.handlePress('√(');
+                  this.state.parenthCount++;
+                }}
               />
               <LightBlueButton
                 label="π"
@@ -109,8 +121,8 @@ class Calculator extends Component {
                 label="("
                 onPress={() => {
                   this.handlePress('(');
-                  this.state.parenthCount++,
-                    console.log('Parentheseis:' + this.state.parenthCount);
+                  this.state.parenthCount++;
+                  console.log('Parentheseis:' + this.state.parenthCount);
                 }}
               />
               {this.state.parenthCount > 0 ? (
@@ -122,7 +134,7 @@ class Calculator extends Component {
                   }}
                 />
               ) : (
-                <OrangeButton label="=" onPress={this.evaluate} />
+                <OrangeButton label="=" onPress={this.handleEqualPress} />
               )}
             </View>
           </View>
