@@ -3,27 +3,32 @@ import {StyleSheet, TouchableOpacity, Text} from 'react-native';
 import * as colors from '../colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export const NumButton = props => (
-  <TouchableOpacity style={styles.numButton}>
-    <Text style={styles.text}>{props.label}</Text>
+export const NumButton = ({label, onPress}) => (
+  <TouchableOpacity style={styles.numButton} onPress={onPress}>
+    <Text style={styles.text}>{label}</Text>
   </TouchableOpacity>
 );
 
-export const OrangeButton = props => (
-  <TouchableOpacity style={styles.orangeButton}>
-    <Text style={styles.text}>{props.label}</Text>
+export const OrangeButton = ({label, onPress}) => (
+  <TouchableOpacity style={styles.orangeButton} onPress={onPress}>
+    <Text style={styles.text}>{label}</Text>
   </TouchableOpacity>
 );
 
-export const LightBlueButton = props => (
-  <TouchableOpacity style={styles.lightBlueButton}>
-    <Text style={styles.text}>{props.label}</Text>
+export const LightBlueButton = ({label, onPress}) => (
+  <TouchableOpacity style={styles.lightBlueButton} onPress={onPress}>
+    <Text style={styles.text}>{label}</Text>
   </TouchableOpacity>
 );
 
-export const ControlButton = props => (
+export const ControlButton = ({iconName, onPress}) => (
   <TouchableOpacity style={styles.controlButton}>
-    <Ionicons name={props.iconName} color={colors.WHITE} size={36} />
+    <Ionicons
+      name={iconName}
+      onPress={onPress}
+      color={colors.WHITE}
+      size={36}
+    />
   </TouchableOpacity>
 );
 
@@ -64,8 +69,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     borderRadius: 15,
-    paddingTop: 4,
-    paddingBottom: 4,
+    paddingTop: 3,
+    paddingBottom: 3,
     alignItems: 'center',
   },
 });
