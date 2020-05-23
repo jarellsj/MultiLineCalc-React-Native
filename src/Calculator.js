@@ -14,6 +14,7 @@ class Calculator extends Component {
     this.state = {
       output: '',
       answer: '',
+      parenthCount: 0,
     };
   }
 
@@ -104,8 +105,25 @@ class Calculator extends Component {
             <View style={styles.buttonRowContainer}>
               <NumButton label="0" onPress={() => this.handlePress('1')} />
               <NumButton label="." onPress={() => this.handlePress('.')} />
-              <NumButton label="(" />
-              <OrangeButton label="=" onPress={this.evaluate} />
+              <NumButton
+                label="("
+                onPress={() => {
+                  this.handlePress('(');
+                  this.state.parenthCount++,
+                    console.log('Parentheseis:' + this.state.parenthCount);
+                }}
+              />
+              {this.state.parenthCount > 0 ? (
+                <OrangeButton
+                  label=")"
+                  onPress={() => {
+                    this.handlePress(')');
+                    this.state.parenthCount--;
+                  }}
+                />
+              ) : (
+                <OrangeButton label="=" onPress={this.evaluate} />
+              )}
             </View>
           </View>
         </View>
