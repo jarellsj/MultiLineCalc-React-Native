@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, ScrollView, Text} from 'react-native';
+import { GREY_TEXT } from './colors';
 
 class History extends Component {
   constructor() {
@@ -44,8 +45,10 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontSize: 20,
     marginBottom: 4,
+    color: GREY_TEXT,
   },
   output: {
+    marginTop: 5,
     textAlign: 'left',
     fontSize: 24,
   },

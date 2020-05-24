@@ -22,16 +22,40 @@ class Calculator extends Component {
   }
 
   handlePress = value => {
-    this.setState(prevState => ({
-      output: this.state.output + value,
-    }));
+    const checkSpace = /\s/g;
+    checkSpace.test(this.state.output)
+      ? this.setState({
+          output: value,
+        })
+      : this.setState(() => ({
+          output: this.state.output + value,
+        }));
   };
 
   onClear = () => {
     this.setState({
-      output: '',
       parenthCount: 0,
+      output: ' ',
     });
+  };
+
+  handleBackspace = output => {
+    const newOutput = output.substring(0, output.length - 1);
+    const checkEmpty = /^\s*$/;
+    const checkParenth = /[(]$/g;
+    checkParenth.test(output)
+      ? this.setState({
+          parenthCount: this.state.parenthCount - 1,
+          output: newOutput,
+        })
+      : checkEmpty.test(newOutput)
+      ? this.setState({
+          parenthCount: 0,
+          output: ' ',
+        })
+      : this.setState({
+          output: newOutput,
+        });
   };
 
   handleEval = expression => {
@@ -41,18 +65,18 @@ class Calculator extends Component {
     });
     this.setState({
       history: newHistory,
-      output: '',
+      output: ' ',
     });
   };
 
   handleError = expression => {
     const newHistory = this.state.history.concat({
       expression: this.state.output,
-      answer: 'Error invalid expression',
+      answer: 'Invalid expression',
     });
     this.setState({
       history: newHistory,
-      output: '',
+      output: ' ',
     });
   };
 
@@ -64,8 +88,6 @@ class Calculator extends Component {
     const endOp = /[/*^+-]$/g;
     const emptySqrt = /['sqrt()']/g;
     const checkDot = /^['.pi']/;
-    console.log('output:' + this.state.output);
-    console.log('output:' + expression);
     checkPi.test(expression) && !checkDot.test(expression)
       ? this.handleEval(expression)
       : endOp.test(expression) ||
@@ -84,7 +106,7 @@ class Calculator extends Component {
             <View style={styles.buttonRowContainer}>
               <ControlButtonIcon
                 iconName="ios-backspace"
-                onPress={() => this.handleTap('clear')}
+                onPress={() => this.handleBackspace(this.state.output)}
               />
               <ControlButton label="Clear" onPress={this.onClear} />
             </View>
