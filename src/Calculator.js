@@ -7,22 +7,24 @@ import {
   OrangeButton,
   ControlButton,
   LightBlueButton,
+  ControlButtonIcon,
 } from './components/Buttons';
+import History from './History';
 
 class Calculator extends Component {
   constructor() {
     super();
     this.state = {
       output: '',
-      answer: '',
+      history: [],
       parenthCount: 0,
     };
   }
 
   handlePress = value => {
-    this.setState({
+    this.setState(prevState => ({
       output: this.state.output + value,
-    });
+    }));
   };
 
   onClear = () => {
@@ -32,39 +34,59 @@ class Calculator extends Component {
     });
   };
 
+  handleEval = expression => {
+    const newHistory = this.state.history.concat({
+      expression: this.state.output,
+      answer: evaluate(expression),
+    });
+    this.setState({
+      history: newHistory,
+      output: '',
+    });
+  };
+
+  handleError = expression => {
+    const newHistory = this.state.history.concat({
+      expression: this.state.output,
+      answer: 'Error invalid expression',
+    });
+    this.setState({
+      history: newHistory,
+      output: '',
+    });
+  };
+
   handleEqualPress = () => {
-    const expression = this.state.output.replace('√', 'sqrt');
+    const tempExpression = this.state.output.replace(/√/g, 'sqrt');
+    const expression = tempExpression.replace(/π/g, '(pi)');
+    const checkNum = /\d/g;
+    const checkPi = /pi/g;
+    const endOp = /[/*^+-]$/g;
+    const emptySqrt = /['sqrt()']/g;
+    const checkDot = /^['.pi']/;
     console.log('output:' + this.state.output);
     console.log('output:' + expression);
-    expression.match('[()]')
-      ? this.setState({
-          answer: 'Error empty ()',
-          output: '',
-        })
-      : this.setState({
-          answer: evaluate(expression),
-          output: '',
-        });
+    checkPi.test(expression) && !checkDot.test(expression)
+      ? this.handleEval(expression)
+      : endOp.test(expression) ||
+        (emptySqrt.test(expression) && !checkNum.test(expression)) ||
+        (checkDot.test(expression) && !checkNum.test(expression))
+      ? this.handleError(expression)
+      : this.handleEval(expression);
   };
 
   render() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <ScrollView style="historyContainer">
-            <Text>{this.state.answer}</Text>
-          </ScrollView>
-
-          <Text style={styles.value}>{this.state.output}</Text>
+          <History history={this.state.history} output={this.state.output} />
           <View style={styles.buttonContainer}>
             <View style={styles.buttonRowContainer}>
-              <ControlButton iconName="ios-arrow-round-back" />
-              <ControlButton iconName="ios-arrow-round-forward" />
-              <ControlButton
+              <ControlButtonIcon
                 iconName="ios-backspace"
                 onPress={() => this.handleTap('clear')}
               />
-              <ControlButton iconName="ios-backspace" onPress={this.onClear} />
+              <ControlButton label="Clear" onPress={this.onClear} />
             </View>
             <View style={styles.buttonRowContainer}>
               <LightBlueButton
@@ -167,8 +189,5 @@ const styles = StyleSheet.create({
   },
   historyContainer: {
     flex: 1,
-  },
-  value: {
-    fontSize: 28,
   },
 });

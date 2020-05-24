@@ -21,13 +21,20 @@ export const LightBlueButton = ({label, onPress}) => (
   </TouchableOpacity>
 );
 
-export const ControlButton = ({iconName, onPress}) => (
+export const ControlButton = ({label, onPress}) => (
+  <TouchableOpacity style={styles.controlButton} onPress={onPress}>
+    <Text style={styles.controlButtonText}>{label}</Text>
+  </TouchableOpacity>
+);
+
+export const ControlButtonIcon = ({iconName, onPress}) => (
   <TouchableOpacity style={styles.controlButton}>
     <Ionicons
       name={iconName}
       onPress={onPress}
       color={colors.WHITE}
-      size={36}
+      size={28}
+      style={styles.controlButtonIcon}
     />
   </TouchableOpacity>
 );
@@ -69,8 +76,16 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     borderRadius: 15,
-    paddingTop: 3,
-    paddingBottom: 3,
+    height: 40,
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  controlButtonText: {
+    fontSize: 22,
+    textAlign: 'center',
+    color: colors.WHITE,
+  },
+  controlButtonIcon: {
+    marginTop: 2,
   },
 });
