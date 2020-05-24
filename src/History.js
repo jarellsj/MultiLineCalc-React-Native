@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, Text} from 'react-native';
-import { GREY_TEXT } from './colors';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import {GREY_TEXT} from './colors';
 
 class History extends Component {
-  constructor() {
-    super();
-  }
   render() {
     return (
       <View style={styles.container}>
@@ -18,8 +21,13 @@ class History extends Component {
           }>
           {this.props.history.map((item, i) => (
             <View key={(item, i)}>
-              <Text style={styles.answer}>{item.answer}</Text>
-              <Text style={styles.expression}>{item.expression}</Text>
+              <TouchableOpacity onPress={() => this.props.action(item.answer)}>
+                <Text style={styles.answer}>{item.answer}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.props.action(item.expression)}>
+                <Text style={styles.expression}>{item.expression}</Text>
+              </TouchableOpacity>
             </View>
           ))}
           <Text style={styles.output}>{this.props.output}</Text>

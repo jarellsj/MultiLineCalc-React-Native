@@ -28,14 +28,19 @@ export const ControlButton = ({label, onPress}) => (
 );
 
 export const ControlButtonIcon = ({iconName, onPress}) => (
-  <TouchableOpacity style={styles.controlButton}>
+  <TouchableOpacity style={styles.controlButton} onPress={onPress}>
     <Ionicons
       name={iconName}
-      onPress={onPress}
       color={colors.WHITE}
       size={28}
       style={styles.controlButtonIcon}
     />
+  </TouchableOpacity>
+);
+
+export const ClearHistoryButton = ({label, onPress}) => (
+  <TouchableOpacity style={styles.clearHistoryButton} onPress={onPress}>
+    <Text style={styles.clearHistoryText}>{label}</Text>
   </TouchableOpacity>
 );
 
@@ -87,5 +92,20 @@ const styles = StyleSheet.create({
   },
   controlButtonIcon: {
     marginTop: 2,
+  },
+  clearHistoryButton: {
+    backgroundColor: colors.GREY,
+    marginLeft: 5,
+    marginBottom: 2,
+    borderRadius: 15,
+    width: 120,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  clearHistoryText: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: colors.WHITE,
   },
 });

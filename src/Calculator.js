@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, SafeAreaView, View, ScrollView, Text} from 'react-native';
+import {StyleSheet, SafeAreaView, View} from 'react-native';
 import * as colors from './colors';
 import {evaluate} from 'mathjs';
 import {
@@ -8,12 +8,16 @@ import {
   ControlButton,
   LightBlueButton,
   ControlButtonIcon,
+  ClearHistoryButton,
 } from './components/Buttons';
 import History from './History';
+
+const checkEmpty = /^\s*$/;
 
 class Calculator extends Component {
   constructor() {
     super();
+    this.handlePress = this.handlePress.bind(this);
     this.state = {
       output: '',
       history: [],
@@ -39,9 +43,16 @@ class Calculator extends Component {
     });
   };
 
+  onClearHistory = () => {
+    this.setState({
+      parenthCount: 0,
+      history: [],
+      output: ' ',
+    });
+  };
+
   handleBackspace = output => {
     const newOutput = output.substring(0, output.length - 1);
-    const checkEmpty = /^\s*$/;
     const checkParenth = /[(]$/g;
     checkParenth.test(output)
       ? this.setState({
@@ -61,7 +72,7 @@ class Calculator extends Component {
   handleEval = expression => {
     const newHistory = this.state.history.concat({
       expression: this.state.output,
-      answer: evaluate(expression),
+      answer: evaluate(expression).toString(10),
     });
     this.setState({
       history: newHistory,
@@ -69,7 +80,7 @@ class Calculator extends Component {
     });
   };
 
-  handleError = expression => {
+  handleError = () => {
     const newHistory = this.state.history.concat({
       expression: this.state.output,
       answer: 'Invalid expression',
@@ -101,7 +112,15 @@ class Calculator extends Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <History history={this.state.history} output={this.state.output} />
+          <ClearHistoryButton
+            label="Clear History"
+            onPress={this.onClearHistory}
+          />
+          <History
+            history={this.state.history}
+            output={this.state.output}
+            action={this.handlePress}
+          />
           <View style={styles.buttonContainer}>
             <View style={styles.buttonRowContainer}>
               <ControlButtonIcon
@@ -169,7 +188,9 @@ class Calculator extends Component {
                   console.log('Parentheseis:' + this.state.parenthCount);
                 }}
               />
-              {this.state.parenthCount > 0 ? (
+              {checkEmpty.test(this.state.output) ? (
+                <OrangeButton label=")=" />
+              ) : this.state.parenthCount > 0 ? (
                 <OrangeButton
                   label=")"
                   onPress={() => {
@@ -200,6 +221,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     marginBottom: 15,
+    marginTop: 5,
   },
   buttonsContainer: {
     flex: 1,
