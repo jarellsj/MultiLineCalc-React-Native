@@ -69,43 +69,26 @@ class Calculator extends Component {
         });
   };
 
-  handleEval = expression => {
-    const newHistory = this.state.history.concat({
-      expression: this.state.output,
-      answer: evaluate(expression).toString(10),
-    });
-    this.setState({
-      history: newHistory,
-      output: ' ',
-    });
-  };
-
-  handleError = () => {
-    const newHistory = this.state.history.concat({
-      expression: this.state.output,
-      answer: 'Invalid expression',
-    });
-    this.setState({
-      history: newHistory,
-      output: ' ',
-    });
-  };
-
   handleEqualPress = () => {
     const tempExpression = this.state.output.replace(/√/g, 'sqrt');
     const expression = tempExpression.replace(/π/g, '(pi)');
-    const checkNum = /\d/g;
-    const checkPi = /pi/g;
-    const endOp = /[/*^+-]$/g;
-    const emptySqrt = /['sqrt()']/g;
-    const checkDot = /^['.pi']/;
-    checkPi.test(expression) && !checkDot.test(expression)
-      ? this.handleEval(expression)
-      : endOp.test(expression) ||
-        (emptySqrt.test(expression) && !checkNum.test(expression)) ||
-        (checkDot.test(expression) && !checkNum.test(expression))
-      ? this.handleError(expression)
-      : this.handleEval(expression);
+    var newHistory = '';
+    try {
+      newHistory = this.state.history.concat({
+        expression: this.state.output,
+        answer: evaluate(expression).toString(10),
+      });
+    } catch {
+      newHistory = this.state.history.concat({
+        expression: this.state.output,
+        answer: 'Invalid expression',
+      });
+    } finally {
+      this.setState({
+        history: newHistory,
+        output: ' ',
+      });
+    }
   };
 
   render() {
